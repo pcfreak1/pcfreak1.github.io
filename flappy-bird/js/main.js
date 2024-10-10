@@ -444,7 +444,7 @@ function playerScore()
    // Check if the score is 5
    if (score === 5) {
       // Display popup with congratulatory message
-      alert("Congrats: placeholder");
+      alert("Congrats: Gefeliciteerd, je hebt de test gehaald!");
    }
 }
 
