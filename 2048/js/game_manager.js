@@ -45,7 +45,7 @@ function GameManager(t, i, n) {
     this.score += i.score;
   
     // Check if the score reaches 1000 and display a message
-    if (this.score >= 1000 && !this.won) {
+    if (this.score >= 100 && !this.won) {
       alert("Congratulations!");
       this.won = true; // Ensure the message only appears once
     }
