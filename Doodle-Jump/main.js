@@ -30,11 +30,13 @@ var platforms = [],
     var scoreText = document.getElementById("score");
     scoreText.innerHTML = score;
 
-    // Check if score reaches 1000 and show a congratulatory message
-    if (score === 1000) {
-        alert("Congratulations! You reached a score of 1000!");
+    // Check if score reaches 100 or more and show a congratulatory message
+    if (score >= 100 && !scoreMessageShown) {
+        alert("Congratulations! You reached a score of 100 or more!");
+        scoreMessageShown = true; // Ensure the message is shown only once
     }
-  }
+}
+Explanation
 
 
 //Base object
