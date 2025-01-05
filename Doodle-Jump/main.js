@@ -31,9 +31,8 @@ var platforms = [],
     scoreText.innerHTML = score;
 
     // Check if score reaches 100 or more and show a congratulatory message
-    if (score >= 100 && !scoreMessageShown) {
+    if (score >= 100) {
         alert("Congratulations! You reached a score of 100 or more!");
-        scoreMessageShown = true; // Ensure the message is shown only once
     }
 }
 Explanation
