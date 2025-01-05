@@ -58,7 +58,7 @@ img {display: none}
   height: 31px;
 }
 
-#arrows {
+#arrows, #left, #right {
   text-align: center;
   position: absolute;
   display: block; !important
