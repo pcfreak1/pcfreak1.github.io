@@ -61,7 +61,7 @@ img {display: none}
 #arrows {
   text-align: center;
   position: absolute;
-  display: all; !important
+  display: block; !important
   width: 100px;
   height: 50px;
 }
