@@ -441,8 +441,8 @@ function playerScore()
    soundScore.play();
    setBigScore();
 
-   // Check if the score is 3
-   if (score === 3) {
+   // Check if the score is 10
+   if (score === 10) {
       // Display popup with congratulatory message
       alert("Congrats: Gefeliciteerd, de coordinaten zijn N 51° 32.901 E005° 41.397");
    }
