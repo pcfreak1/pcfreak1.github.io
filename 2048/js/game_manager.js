@@ -44,11 +44,10 @@ function GameManager(t, i, n) {
     var i = this.grid.move(t);
     this.score += i.score;
   
-    // Check if the score reaches 1000 and display a message
-    if (this.score >= 100 && !this.won) {
-      alert("Congratulations!");
-      this.won = true; // Ensure the message only appears once
-    }
+    if (score === 10) {
+      // Display popup with congratulatory message
+      alert("Congrats: Gefeliciteerd, de coordinaten zijn N 51° 32.901 E005° 41.397");
+   }
   
     i.won ? this.won = !0 : i.moved && this.grid.computerMove();
     this.grid.movesAvailable() || (this.over = !0);
