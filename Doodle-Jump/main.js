@@ -148,7 +148,7 @@ function Platform() {
   else if (score >= 100 && score < 500) this.types = [1, 1, 1, 1, 2, 2];
   else this.types = [1];
 
-  if (score >= 100){
+  if (score >= 3000){
     // Display popup with congratulatory message
     alert("Congrats: Gefeliciteerd, de coordinaten zijn N 51° 32.901 E005° 41.397");
  }
