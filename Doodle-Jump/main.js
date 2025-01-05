@@ -26,19 +26,6 @@ var platforms = [],
   menuloop, broken = 0,
   dir, score = 0, firstRun = true;
 
-  function updateScore() {
-    var scoreText = document.getElementById("score");
-    scoreText.innerHTML = score;
-
-    // Check if score reaches 100 or more and show a congratulatory message
-    if (score >= 100 && !scoreMessageShown) {
-        alert("Congratulations! You reached a score of 100 or more!");
-        scoreMessageShown = true; // Ensure the message is shown only once
-    }
-}
-Explanation
-
-
 //Base object
 var Base = function() {
   this.height = 5;
