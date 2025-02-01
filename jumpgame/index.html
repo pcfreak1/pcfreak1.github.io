@@ -4,69 +4,138 @@
   <title>Basic Doodle Jump HTML Game</title>
   <meta charset="UTF-8">
   <style>
-    body { margin: 0; }
-    canvas { display: block; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  canvas {
+    border: 1px solid black;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .btn {
+    font-size: 24px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+  }
   </style>
-  <!-- Hammer UI -->
-  <link rel="stylesheet" href="https://hammer-ui.com/css/hammer.min.css">
-  <script src="https://hammer-ui.github.io/hammer*fingertip.js"></script>
 </head>
 <body>
-  <canvas id="game"></canvas>
+<canvas width="375" height="667" id="game"></canvas>
+<div class="controls">
+  <button class="btn" id="left">⬅</button>
+  <button class="btn" id="right">➡</button>
+</div>
+<p>Score: <span id="score">0</span></p>
+<script>
+const canvas = document.getElementById('game');
+const context = canvas.getContext('2d');
+const scoreDisplay = document.getElementById('score');
 
-  <script>
-    const canvas = document.getElementById('game').getContext('2d');
-    const hammer = new Hammerhammerscript(' Hammer');
+const platformWidth = 65;
+const platformHeight = 20;
+const platformStart = canvas.height - 50;
 
-    // Increase score when platforms are generated above a certain height
-    let score = 0;
+const gravity = 0.33;
+const drag = 0.3;
+const bounceVelocity = -12.5;
+let score = 0;
+let minPlatformSpace = 15;
+let maxPlatformSpace = 20;
 
-    function updateScore() {
-      if (score > 0) {
-        context.fillStyle = 'rgba(255, 168, 43, 0.7)';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Add points every 100 pixels upwards
-        for (let i = 0; i < Math.floor(canvas.height / 100); i++) {
-          context.fillStyle = 'rgba(255, 69, 0, 0.3)';
-          context.fillRect(0, canvas.height - i * 100, canvas.width, 100);
-        }
+let platforms = [{ x: canvas.width / 2 - platformWidth / 2, y: platformStart }];
 
-        document.body.style.backgroundColor = 'rgb(' + Math.random() * 255 + ', ' + 
-          Math.random() * 255 + ', ' + Math.random() * 255 + ')';
-      }
+function random(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+let y = platformStart;
+while (y > 0) {
+  y -= platformHeight + random(minPlatformSpace, maxPlatformSpace);
+  let x;
+  do {
+    x = random(25, canvas.width - 25 - platformWidth);
+  } while (y > canvas.height / 2 && x > canvas.width / 2 - platformWidth * 1.5 && x < canvas.width / 2 + platformWidth / 2);
+  platforms.push({ x, y });
+}
+
+const doodle = { width: 40, height: 60, x: canvas.width / 2 - 20, y: platformStart - 60, dx: 0, dy: 0 };
+let playerDir = 0;
+let keydown = false;
+let prevDoodleY = doodle.y;
+
+function loop() {
+  requestAnimationFrame(loop);
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  doodle.dy += gravity;
+
+  if (doodle.y < canvas.height / 2 && doodle.dy < 0) {
+    score += Math.abs(doodle.dy);
+    scoreDisplay.textContent = Math.floor(score);
+    platforms.forEach(platform => platform.y += -doodle.dy);
+    while (platforms[platforms.length - 1].y > 0) {
+      platforms.push({ x: random(25, canvas.width - 25 - platformWidth), y: platforms[platforms.length - 1].y - (platformHeight + random(minPlatformSpace, maxPlatformSpace)) });
+      minPlatformSpace += 0.5;
+      maxPlatformSpace += 0.5;
+      maxPlatformSpace = Math.min(maxPlatformSpace, canvas.height / 2);
     }
+  } else {
+    doodle.y += doodle.dy;
+  }
 
-    function random(min, max) {
-      return Math.random() * (max - min) + min;
+  if (!keydown) {
+    if (playerDir < 0) {
+      doodle.dx += drag;
+      if (doodle.dx > 0) { doodle.dx = 0; playerDir = 0; }
+    } else if (playerDir > 0) {
+      doodle.dx -= drag;
+      if (doodle.dx < 0) { doodle.dx = 0; playerDir = 0; }
     }
-    
-    // ... [rest of the existing code remains unchanged until this point...]
+  }
 
-    document.addEventListener('keydown', function(e) {
-      // left arrow key
-      if (e.which === 37 && !hammer.isDown('left')) {
-        hammer.fingertip('left').on('pressed', () => {keydown = true});
-        playerDir = -1;
-        doodle.dx = -2;
+  doodle.x += doodle.dx;
+  if (doodle.x + doodle.width < 0) doodle.x = canvas.width;
+  else if (doodle.x > canvas.width) doodle.x = -doodle.width;
 
-      }
-      // right arrow key
-      else if (e.which === 39 && !hammer.isDown('right')) {
-        hammer.fingertip('right').on('pressed', () => {keydown = true});
-        playerDir = 1;
-        doodle.dx = 2;
-      }
+  context.fillStyle = 'green';
+  platforms.forEach(platform => {
+    context.fillRect(platform.x, platform.y, platformWidth, platformHeight);
+    if (doodle.dy > 0 && prevDoodleY + doodle.height <= platform.y && doodle.x < platform.x + platformWidth && doodle.x + doodle.width > platform.x && doodle.y < platform.y + platformHeight && doodle.y + doodle.height > platform.y) {
+      doodle.y = platform.y - doodle.height;
+      doodle.dy = bounceVelocity;
+    }
+  });
 
-      document.addEventListener('keyup', function(e) {
-        keydown = false;
-      });
-    });
+  context.fillStyle = 'yellow';
+  context.fillRect(doodle.x, doodle.y, doodle.width, doodle.height);
+  prevDoodleY = doodle.y;
+  platforms = platforms.filter(platform => platform.y < canvas.height);
+}
 
-    // Start the game
-    requestAnimationFrame(loop);
-    
-    updateScore();
-  </script>
+document.addEventListener('keydown', function(e) {
+  if (e.which === 37) { keydown = true; playerDir = -1; doodle.dx = -3; }
+  else if (e.which === 39) { keydown = true; playerDir = 1; doodle.dx = 3; }
+});
+
+document.addEventListener('keyup', function() { keydown = false; });
+
+document.getElementById('left').addEventListener('touchstart', () => { keydown = true; playerDir = -1; doodle.dx = -3; });
+document.getElementById('left').addEventListener('touchend', () => { keydown = false; });
+document.getElementById('right').addEventListener('touchstart', () => { keydown = true; playerDir = 1; doodle.dx = 3; });
+document.getElementById('right').addEventListener('touchend', () => { keydown = false; });
+
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
