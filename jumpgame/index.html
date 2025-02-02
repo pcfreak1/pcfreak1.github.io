@@ -81,6 +81,14 @@ function loop() {
     score += Math.abs(doodle.dy);
     scoreDisplay.textContent = Math.floor(score);
     platforms.forEach(platform => platform.y += -doodle.dy);
+    
+    // Generate new platforms when the highest one moves into view
+    while (platforms[platforms.length - 1].y > 0) {
+      platforms.push({
+        x: random(25, canvas.width - 25 - platformWidth),
+        y: platforms[platforms.length - 1].y - (platformHeight + random(minPlatformSpace, maxPlatformSpace))
+      });
+    }
   } else {
     doodle.y += doodle.dy;
   }
