@@ -82,9 +82,8 @@ function loop() {
     scoreDisplay.textContent = Math.floor(score);
     platforms.forEach(platform => platform.y += -doodle.dy);
     
-    // Reduce platform generation frequency as the score increases
-    let platformReductionFactor = Math.max(1, Math.floor(score / 1000));
-    if (Math.random() < 1 / platformReductionFactor) {
+    // Generate new platforms when the highest one moves into view
+    while (platforms[platforms.length - 1].y > 0) {
       platforms.push({
         x: random(25, canvas.width - 25 - platformWidth),
         y: platforms[platforms.length - 1].y - (platformHeight + random(minPlatformSpace, maxPlatformSpace))
@@ -94,7 +93,7 @@ function loop() {
     doodle.y += doodle.dy;
   }
 
-  if (score >= 10000 && !alertShown) {
+  if (score >= 50000 && !alertShown) {
     alert("Gefeliciteerd, cache: N 51° 32.901 E005° 41.397");
     alertShown = true;
   }
